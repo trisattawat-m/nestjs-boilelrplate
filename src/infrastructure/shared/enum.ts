@@ -1,0 +1,9 @@
+export enum SERVICES {
+  DAHUA_EVENT_SERVICE = 'DAHUA_EVENT_SERVICE',
+}
+
+export enum REPOSITORY {}
+
+export enum ADAPTERS {
+  DAHUA_EVENT_ADAPTER = 'DAHUA_EVENT_ADAPTER',
+}
