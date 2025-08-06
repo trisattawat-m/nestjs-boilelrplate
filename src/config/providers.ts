@@ -1,5 +1,5 @@
-import { DahuaEventAdapter } from '@domain/adapters/dahua-events/dahua-event.adapter';
-import { DahuaEventAdapterPort } from '@domain/adapters/dahua-events/dahua-event.adapter.port';
+import { DahuaEventAdapter } from '@domain/adapters/http/dahua-events/dahua-event.adapter';
+import { DahuaEventAdapterPort } from '@domain/adapters/http/dahua-events/dahua-event.adapter.port';
 import { DahuaEventService } from '@domain/services/dahua-events/dahua-event.service';
 import { SERVICES, ADAPTERS } from '@infrastructure/shared/enum';
 import { Provider } from '@nestjs/common';
