@@ -14,8 +14,11 @@ export class DahuaEventService implements DahuaEventServicePort {
   ) {}
 
   async getEventInit(): Promise<string> {
-    console.log(await this._dahuaEventRepository.getTableName());
     return this._dahuaEventAdapter.getEventInit();
+  }
+
+  async getHandshake(): Promise<string> {
+    return this._dahuaEventRepository.getHandshake();
   }
 
   async pubMqttMessage(message: TestMqttPayload): Promise<boolean> {

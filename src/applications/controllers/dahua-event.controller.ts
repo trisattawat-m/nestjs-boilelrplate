@@ -17,6 +17,11 @@ export class DahuaEventsController {
     return this._dahuaEventService.getEventInit();
   }
 
+  @Get('/handshake')
+  getRepositoryHandshake() {
+    return this._dahuaEventService.getHandshake();
+  }
+
   @Post('/mqtt')
   postMqttEvent(@Body() payload: TestMqttPayload) {
     return this._dahuaEventService.pubMqttMessage(payload);

@@ -1,21 +1,32 @@
-import { PostgresConfig } from '@config/config';
+import { Injectable } from '@nestjs/common';
 import { DahuaEventRepositoryPort } from './dahua-event.repository.port';
+import { PrismaService } from '@infrastructure/prisma/prisma.service';
 
+@Injectable()
 export class DahuaEventRepository implements DahuaEventRepositoryPort {
-  private readonly tableName: string;
-
-  constructor(
-    private readonly _config: PostgresConfig,
-    tableName: string = 'dahua_event_table',
-  ) {
-    this.tableName = tableName;
-  }
+  constructor(private readonly _prisma: PrismaService) {}
 
   async getHandshake(): Promise<string> {
-    return 'Handshake successful';
+    try {
+      return 'Handshake successful';
+    } catch (error) {
+      console.error('Error in getHandshake:', error);
+      throw new Error('Failed to get handshake');
+    }
   }
 
-  async getTableName(): Promise<string> {
-    return this.tableName;
+  async recordMqttMessage(message: string): Promise<boolean> {
+    console.log(message);
+    try {
+      await this._prisma.dahuaEvent.create({
+        data: {
+          message,
+        },
+      });
+      return true;
+    } catch (error) {
+      console.error('Error in recordMqttMessage:', error);
+      throw new Error('Failed to record MQTT message');
+    }
   }
 }

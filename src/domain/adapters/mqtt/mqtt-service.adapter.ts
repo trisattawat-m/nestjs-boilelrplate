@@ -23,12 +23,6 @@ export class MqttAdapter
         console.log('[MQTT] Connected to broker:', this.config.brokerUrl);
       });
 
-      this.mqttClient.on('message', (topic, message) => {
-        const payload = message.toString();
-        this.lastMessages.set(topic, payload);
-        console.log(`[MQTT] Received on "${topic}": ${payload}`);
-      });
-
       this.mqttClient.on('error', (err) => {
         console.error('[MQTT] Connection error:', err.message);
       });
@@ -39,28 +33,47 @@ export class MqttAdapter
 
   async onModuleDestroy(): Promise<void> {
     if (this.mqttClient) {
-      this.mqttClient.end(true, () => {
-        console.log('[MQTT] Disconnected from broker');
+      await new Promise<void>((resolve) => {
+        this.mqttClient!.end(true, () => {
+          console.log('[MQTT] Disconnected from broker');
+          resolve();
+        });
       });
     }
   }
 
-  async subscribe(topic: string): Promise<string | null> {
+  async subscribe(
+    topic: string,
+    messageHandler: (message: string, topic: string) => Promise<void>,
+  ): Promise<void> {
     if (!this.mqttClient) {
       throw new Error('[MQTT] Client is not connected');
     }
 
-    if (!this.lastMessages.has(topic)) {
-      await new Promise<void>((resolve, reject) => {
-        this.mqttClient.subscribe(topic, (err) => {
-          if (err) reject(err);
-          else resolve();
-        });
+    await new Promise<void>((resolve, reject) => {
+      this.mqttClient!.subscribe(topic, (err) => {
+        if (err) reject(err);
+        else resolve();
       });
-      this.lastMessages.set(topic, null);
-    }
+    });
 
-    return this.lastMessages.get(topic);
+    // Remove previous listeners to prevent multiple calls if subscribe is called multiple times on same topic
+    this.mqttClient.removeAllListeners('message');
+
+    this.mqttClient.on('message', async (msgTopic, message) => {
+      if (msgTopic === topic) {
+        const payload = message.toString();
+        this.lastMessages.set(topic, payload);
+        try {
+          await messageHandler(payload, topic);
+        } catch (error) {
+          console.error(
+            `[MQTT] Error in messageHandler for topic ${topic}:`,
+            error,
+          );
+        }
+      }
+    });
   }
 
   async getLastMessage(topic: string): Promise<string | null> {
@@ -72,11 +85,17 @@ export class MqttAdapter
       throw new Error('[MQTT] Client is not connected');
     }
 
-    this.mqttClient.publish(topic, message, (err) => {
-      if (err) {
-        console.error(`[MQTT] Failed to publish to "${topic}":`, err.message);
-      }
+    await new Promise<void>((resolve, reject) => {
+      this.mqttClient!.publish(topic, message, (err) => {
+        if (err) {
+          console.error(`[MQTT] Failed to publish to "${topic}":`, err.message);
+          reject(err);
+        } else {
+          resolve();
+        }
+      });
     });
+
     return true;
   }
 }

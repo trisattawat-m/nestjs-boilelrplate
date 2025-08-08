@@ -1,9 +1,20 @@
 import { MqttConfig } from '@config/config';
-import { MqttAdapterProvider, MqttServiceProvider } from '@config/providers';
+import {
+  DahuaEventRepositoryProvider,
+  MqttAdapterProvider,
+  MqttServiceProvider,
+} from '@config/providers';
 import { Module } from '@nestjs/common';
+import { PrismaModule } from './prisma.module';
 
 @Module({
-  providers: [MqttConfig, MqttAdapterProvider, MqttServiceProvider],
-  exports: [MqttAdapterProvider],
+  imports: [PrismaModule],
+  providers: [
+    MqttConfig,
+    MqttAdapterProvider,
+    MqttServiceProvider,
+    DahuaEventRepositoryProvider,
+  ],
 })
+
 export class MqttModule {}

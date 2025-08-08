@@ -33,10 +33,13 @@ export const DahuaEventServiceProvider: Provider = {
 
 export const MqttServiceProvider: Provider = {
   provide: SERVICES.MQTT_SERVICE,
-  useFactory(mqttAdapter: MqttAdapterPort) {
-    return new MqttService(mqttAdapter);
+  useFactory(
+    mqttAdapter: MqttAdapterPort,
+    dahuaEventRepository: DahuaEventRepositoryPort,
+  ) {
+    return new MqttService(mqttAdapter, dahuaEventRepository);
   },
-  inject: [ADAPTERS.MQTT_ADAPTER],
+  inject: [ADAPTERS.MQTT_ADAPTER, REPOSITORY.DAHUA_EVENT_REPOSITORY],
 };
 
 //adapters provider
