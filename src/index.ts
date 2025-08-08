@@ -3,7 +3,7 @@ import { AppModule } from '@config/modules/app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import helmet from 'helmet';
-import { PostgresConfig } from '@config/config/config';
+import { PostgresConfig } from '@config/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

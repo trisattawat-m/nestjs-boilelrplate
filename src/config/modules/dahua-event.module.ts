@@ -1,18 +1,21 @@
 import { DahuaEventsController } from '@applications/controllers/dahua-event.controller';
+import { MqttConfig } from '@config/config';
 import {
-  DahuaEventProvider,
+  DahuaEventServiceProvider,
   DahuaEventAdapterProvider,
   DahuaEventRepositoryProvider,
+  MqttAdapterProvider,
 } from '@config/providers';
 import { Module } from '@nestjs/common';
 
 @Module({
   controllers: [DahuaEventsController],
   providers: [
-    DahuaEventProvider,
+    DahuaEventServiceProvider,
     DahuaEventAdapterProvider,
     DahuaEventRepositoryProvider,
+    MqttAdapterProvider,
+    MqttConfig,
   ],
-  exports: [DahuaEventProvider],
 })
 export class DahuaEventModule {}

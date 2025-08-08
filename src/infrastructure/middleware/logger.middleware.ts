@@ -1,4 +1,4 @@
-import { ecsLogger } from '@config/config/logger.config';
+import { ecsLogger } from '@config/logger.config';
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 import { ObjectFlattener } from '../utils/flatten-object.util';

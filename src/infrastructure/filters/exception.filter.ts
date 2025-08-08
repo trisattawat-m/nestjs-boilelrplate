@@ -1,4 +1,4 @@
-import { ecsLogger } from '@config/config/logger.config';
+import { ecsLogger } from '@config/logger.config';
 import { Catch, ArgumentsHost, HttpException } from '@nestjs/common';
 import { BaseExceptionFilter } from '@nestjs/core';
 import { Request, Response } from 'express';

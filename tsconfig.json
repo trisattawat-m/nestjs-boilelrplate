@@ -1,4 +1,3 @@
-
 {
   "compilerOptions": {
     "module": "commonjs",
@@ -20,12 +19,26 @@
     "noFallthroughCasesInSwitch": false,
     "moduleResolution": "node",
     "paths": {
-      "@config/*": ["src/config/*"],
-      "@infrastructure/*": ["src/infrastructure/*"],
-      "@applications/*": ["src/applications/*"],
-      "@domain/*": ["src/domain/*"]
+      "@config/*": [
+        "src/config/*"
+      ],
+      "@infrastructure/*": [
+        "src/infrastructure/*"
+      ],
+      "@applications/*": [
+        "src/applications/*"
+      ],
+      "@domain/*": [
+        "src/domain/*"
+      ]
     }
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist"]
+  "include": [
+    "src/**/*",
+    "test/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }

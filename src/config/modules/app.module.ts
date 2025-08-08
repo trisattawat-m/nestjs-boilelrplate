@@ -1,11 +1,12 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { APP_FILTER } from '@nestjs/core';
-import { AllExceptionsFilter } from 'src/common/filters/exception.filter';
-import { LoggerMiddleware } from 'src/common/middleware/logger.middleware';
+import { AllExceptionsFilter } from '@infrastructure/filters/exception.filter';
+import { LoggerMiddleware } from '@infrastructure/middleware/logger.middleware';
 import { DahuaEventModule } from './dahua-event.module';
 import { HealthModule } from './health.module';
+import { MqttModule } from './mqtt.module';
 @Module({
-  imports: [HealthModule, DahuaEventModule],
+  imports: [HealthModule, DahuaEventModule, MqttModule],
   providers: [
     {
       provide: APP_FILTER,

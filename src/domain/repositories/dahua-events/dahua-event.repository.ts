@@ -1,4 +1,4 @@
-import { PostgresConfig } from '@config/config/config';
+import { PostgresConfig } from '@config/config';
 import { DahuaEventRepositoryPort } from './dahua-event.repository.port';
 
 export class DahuaEventRepository implements DahuaEventRepositoryPort {
