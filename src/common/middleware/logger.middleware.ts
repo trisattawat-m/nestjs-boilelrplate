@@ -20,7 +20,6 @@ export class LoggerMiddleware implements NestMiddleware {
         },
         url: {
           full: fullUrl,
-          path: req.originalUrl,
         },
         user_agent: req.get('user-agent'),
         client: {

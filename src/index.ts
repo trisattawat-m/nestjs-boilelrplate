@@ -3,6 +3,7 @@ import { AppModule } from '@config/modules/app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import helmet from 'helmet';
+import { PostgresConfig } from '@config/config/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -33,4 +34,5 @@ async function bootstrap() {
   console.log(`🚀 Server is running on http://localhost:${port}`);
   console.log(`📚 Swagger docs available at http://localhost:${port}/docs`);
 }
+
 bootstrap();
