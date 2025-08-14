@@ -43,16 +43,6 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
       body = { status, error: errorType, message: 'Internal Server Error' };
     }
 
-    const logData = {
-      status,
-      error: errorType,
-      domain,
-      code,
-      message: body.message,
-      path: request.originalUrl,
-      method: request.method,
-    };
-
     response.status(status).json(body);
   }
 }
