@@ -1,4 +1,5 @@
 import { ecsLogger } from '@config/logger.config';
+import { BaseException } from '@infrastructure/shared/exceptions/base.exception';
 import { Catch, ArgumentsHost, HttpException } from '@nestjs/common';
 import { BaseExceptionFilter } from '@nestjs/core';
 import { Request, Response } from 'express';
@@ -10,38 +11,53 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
     const request = ctx.getRequest<Request>();
     const response = ctx.getResponse<Response>();
 
-    const status =
-      exception instanceof HttpException ? exception.getStatus() : 500;
-    const message =
-      exception instanceof HttpException
-        ? exception.message
-        : 'Internal Server Error';
-    const stackTrace = exception instanceof Error ? exception.stack : undefined;
+    let status: number;
+    let body: any;
+    let errorType: string;
+    let domain: string | null = null;
+    let code: string | null = null;
 
-    ecsLogger.error('Unhandled Exception', {
-      error: {
-        message,
-        type: exception.constructor.name,
-        stack_trace: stackTrace,
-      },
-      http: {
-        request: {
-          method: request.method,
-        },
-        response: {
-          status_code: status,
-        },
-      },
-      url: {
-        path: request.originalUrl,
-      },
-      event: {
-        category: ['error'],
-        action: 'unhandled_exception',
-        kind: 'exception',
-      },
-    });
+    if (exception instanceof BaseException) {
+      status = exception.statusCode;
+      errorType = exception.name;
+      domain = exception.domain;
+      code = exception.code;
+      body = {
+        status,
+        error: errorType,
+        domain,
+        code,
+        message: exception.message,
+      };
+    } else if (exception instanceof HttpException) {
+      status = exception.getStatus();
+      errorType = exception.name;
+      body = { status, error: errorType, message: exception.message };
+    } else if (exception instanceof Error) {
+      status = 500;
+      errorType = exception.constructor.name;
+      body = { status, error: errorType, message: exception.message };
+    } else {
+      status = 500;
+      errorType = 'UnknownError';
+      body = { status, error: errorType, message: 'Internal Server Error' };
+    }
 
-    super.catch(exception, host);
+    // Simplified logging
+    const logData = {
+      status,
+      error: errorType,
+      domain,
+      code,
+      message: body.message,
+      path: request.originalUrl,
+      method: request.method,
+    };
+
+    if (status < 400) {
+      ecsLogger.info(body.message, logData);
+    } else {
+      ecsLogger.error(body.message, logData);
+    }
   }
 }
