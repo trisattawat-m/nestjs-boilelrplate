@@ -23,11 +23,13 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
       domain = exception.domain;
       code = exception.code;
       body = {
-        status,
-        error: errorType,
-        domain,
-        code,
-        message: exception.message,
+        domain: exception.domain,
+        status: exception.statusCode,
+        code: exception.code,
+        error: {
+          code: exception.name,
+          message: exception.message,
+        },
       };
     } else if (exception instanceof HttpException) {
       status = exception.getStatus();
