@@ -43,7 +43,6 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
       body = { status, error: errorType, message: 'Internal Server Error' };
     }
 
-    // Simplified logging
     const logData = {
       status,
       error: errorType,
@@ -54,10 +53,6 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
       method: request.method,
     };
 
-    if (status < 400) {
-      ecsLogger.info(body.message, logData);
-    } else {
-      ecsLogger.error(body.message, logData);
-    }
+    response.status(status).json(body);
   }
 }
